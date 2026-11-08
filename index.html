@@ -434,19 +434,21 @@
       setupCanvas();
     }
 
-    // --- 繪製刮刮樂銀箔塗層 ---
+// --- 繪製刮刮樂銀箔塗層（修復高解析度座標偏移問題） ---
     function setupCanvas() {
       const rect = scratchCanvas.getBoundingClientRect();
       const dpr = window.devicePixelRatio || 1;
       
-      scratchCanvas.width = rect.width * dpr;
-      scratchCanvas.height = rect.height * dpr;
+      // 將內部像素大小直接等比放大至物理像素
+      scratchCanvas.width = Math.round(rect.width * dpr);
+      scratchCanvas.height = Math.round(rect.height * dpr);
 
       const ctx = scratchCanvas.getContext('2d');
-      ctx.scale(dpr, dpr);
+      // 重設變換矩陣，避免重複疊加 scale
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
 
-      // 銀色金屬全息底漆
-      const grad = ctx.createLinearGradient(0, 0, rect.width, rect.height);
+      // 銀色金屬全息底漆（以真實像素寬高繪製）
+      const grad = ctx.createLinearGradient(0, 0, scratchCanvas.width, scratchCanvas.height);
       grad.addColorStop(0, '#cbd5e1');
       grad.addColorStop(0.3, '#94a3b8');
       grad.addColorStop(0.5, '#e2e8f0');
@@ -454,44 +456,48 @@
       grad.addColorStop(1, '#94a3b8');
 
       ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, rect.width, rect.height);
+      ctx.fillRect(0, 0, scratchCanvas.width, scratchCanvas.height);
 
       // 雜訊金屬閃爍顆粒
       for (let i = 0; i < 450; i++) {
         ctx.fillStyle = Math.random() > 0.5 ? 'rgba(255,255,255,0.45)' : 'rgba(30,41,59,0.35)';
-        ctx.fillRect(Math.random() * rect.width, Math.random() * rect.height, 2, 2);
+        ctx.fillRect(Math.random() * scratchCanvas.width, Math.random() * scratchCanvas.height, 2 * dpr, 2 * dpr);
       }
 
       // 居中印章
       ctx.fillStyle = '#0f172a';
-      ctx.font = '900 16px "Montserrat", sans-serif';
+      ctx.font = `900 ${16 * dpr}px "Montserrat", sans-serif`;
       ctx.textAlign = 'center';
-      ctx.fillText('★ POKÉMON GENDER REVEAL ★', rect.width / 2, rect.height / 2 - 12);
-      ctx.font = '700 12px "Noto Sans TC", sans-serif';
+      ctx.fillText('★ POKÉMON GENDER REVEAL ★', scratchCanvas.width / 2, scratchCanvas.height / 2 - 12 * dpr);
+      ctx.font = `700 ${12 * dpr}px "Noto Sans TC", sans-serif`;
       ctx.fillStyle = '#1e293b';
-      ctx.fillText('滑動刮開塗層 揭曉卡牌', rect.width / 2, rect.height / 2 + 12);
+      ctx.fillText('滑動刮開塗層 揭曉卡牌', scratchCanvas.width / 2, scratchCanvas.height / 2 + 12 * dpr);
     }
 
-    // --- 刮除互動處理 ---
+    // --- 刮除互動處理（精準對齊手指觸控座標） ---
     function scratch(e) {
       if (!isScratching || scratchRevealed) return;
-      e.preventDefault();
+      if (e.cancelable) e.preventDefault();
 
       const rect = scratchCanvas.getBoundingClientRect();
       const clientX = e.touches ? e.touches[0].clientX : e.clientX;
       const clientY = e.touches ? e.touches[0].clientY : e.clientY;
 
-      const x = clientX - rect.x;
-      const y = clientY - rect.y;
+      // 計算手指在 Canvas 內部實際像素上的精確位置
+      const scaleX = scratchCanvas.width / rect.width;
+      const scaleY = scratchCanvas.height / rect.height;
+
+      const x = (clientX - rect.left) * scaleX;
+      const y = (clientY - rect.top) * scaleY;
 
       const ctx = scratchCanvas.getContext('2d');
       const dpr = window.devicePixelRatio || 1;
 
       ctx.save();
-      ctx.scale(dpr, dpr);
       ctx.globalCompositeOperation = 'destination-out';
       ctx.beginPath();
-      ctx.arc(x, y, 26, 0, Math.PI * 2);
+      // 依裝置像素比等比放大刮除圓形半徑（手感更滑順）
+      ctx.arc(x, y, 28 * dpr, 0, Math.PI * 2);
       ctx.fill();
       ctx.restore();
 

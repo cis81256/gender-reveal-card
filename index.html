@@ -106,8 +106,8 @@
       <span class="font-bold tracking-wider text-slate-200" id="stageIndicator">STAGE 1 · 選擇卡包</span>
     </div>
     <button id="soundToggleBtn" class="flex items-center gap-1 bg-slate-900/80 border border-slate-700/60 hover:border-slate-500 px-2.5 py-1 rounded-full text-slate-300 transition">
-      <span id="soundIcon">🔊</span>
-      <span id="soundText" class="font-bold">音效開啟</span>
+      <span id="soundIcon">🎵</span>
+      <span id="soundText" class="font-bold">音樂與音效</span>
     </button>
   </header>
 
@@ -177,7 +177,7 @@
         <p class="text-[11px] text-slate-300" id="scratchSubText">手指滑動刮除銀粉塗層，揭曉卡牌全貌！</p>
       </div>
 
-      <!-- 滿版卡牌容器 (極大化呈現) -->
+      <!-- 滿版卡牌容器 -->
       <div class="w-full max-w-[340px] px-1 flex justify-center">
         <div class="relative w-full aspect-[1/1.42] rounded-2xl p-[3px] bg-gradient-to-b from-amber-300 via-yellow-500 to-amber-600 shadow-2xl shadow-black/80 flex items-center justify-center" id="cardOuterFrame">
           
@@ -270,11 +270,20 @@
     }
     initCloudCounter();
 
-    // --- Web Audio 簡易音效引擎 ---
+    // ==========================================
+    // --- Web Audio 引擎：音效與輕柔鋼琴背景音樂 ---
+    // ==========================================
     let audioCtx = null;
+    let bgmMasterGain = null;
+    let isBgmPlaying = false;
+    let bgmTimer = null;
+
     function getAudioContext() {
       if (!audioCtx) {
         audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        bgmMasterGain = audioCtx.createGain();
+        bgmMasterGain.gain.setValueAtTime(0.065, audioCtx.currentTime); // 輕柔微音量背景
+        bgmMasterGain.connect(audioCtx.destination);
       }
       if (audioCtx.state === 'suspended') {
         audioCtx.resume();
@@ -282,6 +291,83 @@
       return audioCtx;
     }
 
+    // 合成單個溫暖鋼琴琴音（主波 + 泛音 + 指尖減衰）
+    function playPianoKey(freq, time, duration = 2.4, velocity = 0.5) {
+      if (!soundEnabled || !audioCtx) return;
+
+      const osc = audioCtx.createOscillator();
+      const osc2 = audioCtx.createOscillator();
+      const noteGain = audioCtx.createGain();
+
+      osc.type = 'sine';
+      osc2.type = 'triangle'; // 增添鋼琴木質泛音
+      osc.frequency.setValueAtTime(freq, time);
+      osc2.frequency.setValueAtTime(freq * 2, time); // 八度微泛音
+
+      const peakGain = 0.3 * velocity;
+      noteGain.gain.setValueAtTime(0, time);
+      noteGain.gain.linearRampToValueAtTime(peakGain, time + 0.02); // 柔和起音
+      noteGain.gain.exponentialRampToValueAtTime(0.0001, time + duration); // 自然衰減
+
+      const noteFilter = audioCtx.createBiquadFilter();
+      noteFilter.type = 'lowpass';
+      noteFilter.frequency.setValueAtTime(1200, time); // 濾除尖銳高頻，營造柔美質感
+
+      osc.connect(noteGain);
+      osc2.connect(noteGain);
+      noteGain.connect(noteFilter);
+      noteFilter.connect(bgmMasterGain);
+
+      osc.start(time);
+      osc2.start(time);
+      osc.stop(time + duration);
+      osc2.stop(time + duration);
+    }
+
+    // 輕柔鋼琴循環旋律 (Cmaj7 -> Am7 -> Fmaj7 -> G7 溫馨和弦進行)
+    const chords = [
+      // Cmaj7 (C3, G3, B3, E4, G4)
+      [130.81, 196.00, 246.94, 329.63, 392.00],
+      // Am7 (A2, E3, G3, C4, E4)
+      [110.00, 164.81, 196.00, 261.63, 329.63],
+      // Fmaj7 (F2, C3, A3, E4, A4)
+      [87.31, 130.81, 220.00, 329.63, 440.00],
+      // G7 (G2, D3, F3, B3, D4)
+      [98.00, 146.83, 174.61, 246.94, 293.66]
+    ];
+
+    let chordIdx = 0;
+
+    function playNextPianoBar() {
+      if (!isBgmPlaying || !audioCtx) return;
+
+      const now = audioCtx.currentTime;
+      const currentChord = chords[chordIdx % chords.length];
+      chordIdx++;
+
+      // 溫和琶音演奏
+      currentChord.forEach((freq, idx) => {
+        const offset = idx * 0.45 + (Math.random() * 0.05);
+        playPianoKey(freq, now + offset, 3.0, 0.7 - idx * 0.08);
+      });
+
+      // 隔 2.6 秒進下一個小節
+      bgmTimer = setTimeout(playNextPianoBar, 2600);
+    }
+
+    function startPianoBGM() {
+      if (isBgmPlaying) return;
+      getAudioContext();
+      isBgmPlaying = true;
+      playNextPianoBar();
+    }
+
+    function stopPianoBGM() {
+      isBgmPlaying = false;
+      if (bgmTimer) clearTimeout(bgmTimer);
+    }
+
+    // --- 各類互動音效 ---
     function playTone(freq, type = 'sine', duration = 0.15, gainVal = 0.2) {
       if (!soundEnabled) return;
       try {
@@ -394,9 +480,9 @@
       }
     }
 
-    // --- 選擇卡包 ---
+    // --- 選擇卡包（觸發背景音樂播放） ---
     function selectPack(index) {
-      getAudioContext();
+      startPianoBGM();
       playTone(440, 'triangle', 0.15, 0.2);
       currentSelectedIndex = index;
 
@@ -584,6 +670,7 @@
 
     // --- 隨機抽包 ---
     randomPickBtn.addEventListener('click', () => {
+      startPianoBGM();
       const available = [];
       for (let i = 0; i < TOTAL_PACKS; i++) {
         if (!openedPacks.has(i)) available.push(i);
@@ -594,7 +681,7 @@
       }
     });
 
-    // --- 獻上祝福連擊 (修正 99+ 遞增與持久化) ---
+    // --- 獻上祝福連擊 ---
     cheerBtn.addEventListener('click', async () => {
       cheerNum++;
       localStorage.setItem('babyReveal_cheerCount', cheerNum);
@@ -630,16 +717,17 @@
       }
     });
 
-    // --- 音效開關 ---
+    // --- 音樂與音效開關切換 ---
     soundToggleBtn.addEventListener('click', () => {
       soundEnabled = !soundEnabled;
       if (soundEnabled) {
-        soundIcon.textContent = '🔊';
-        soundText.textContent = '音效開啟';
-        playTone(523.25, 'triangle', 0.1);
+        soundIcon.textContent = '🎵';
+        soundText.textContent = '音樂與音效';
+        startPianoBGM();
       } else {
         soundIcon.textContent = '🔇';
         soundText.textContent = '靜音';
+        stopPianoBGM();
       }
     });
 

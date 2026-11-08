@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>家慶 & 若瑜 · 2026 PTCG 寶寶性別揭曉擴充包 ⚡</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@500;700;900&family=Oswald:wght@600;700&family=Teko:wght@600;700&family=Chakra+Petch:wght@700&display=swap" rel="stylesheet">
+  
+  <!-- Canvas Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Noto Sans TC"', 'system-ui', 'sans-serif'],
+            display: ['"Oswald"', '"Noto Sans TC"', 'sans-serif'],
+            sport: ['"Teko"', 'sans-serif'],
+            monoNum: ['"Chakra Petch"', 'monospace'],
+          },
+          colors: {
+            ptcgGold: '#facc15',
+            darkNebula: '#0a0d18',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    .touch-none-action {
+      touch-action: none;
+    }
+
+    /* PTCG Pocket Deep Space Gradient */
+    .bg-pocket {
+      background-color: #070913;
+      background-image: 
+        radial-gradient(circle at 50% 10%, rgba(56, 189, 248, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 20% 80%, rgba(139, 92, 246, 0.2) 0%, transparent 60%),
+        radial-gradient(circle at 80% 70%, rgba(234, 179, 8, 0.15) 0%, transparent 60%);
+    }
+
+    /* Holographic Booster Pack Finish */
+    .booster-foil {
+      background: linear-gradient(135deg, 
+        #0f172a 0%, 
+        #1e293b 25%, 
+        #334155 45%, 
+        #64748b 55%, 
+        #1e293b 75%, 
+        #0b0f19 100%
+      );
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.8), 0 0 15px rgba(56, 189, 248, 0.15);
+    }
+
+    .holo-sheen {
+      background: linear-gradient(115deg, 
+        transparent 15%, 
+        rgba(56, 189, 248, 0.3) 30%, 
+        rgba(234, 179, 8, 0.35) 50%, 
+        rgba(244, 63, 94, 0.3) 70%, 
+        transparent 85%
+      );
+      background-size: 200% 200%;
+      animation: sheen 3.5s linear infinite;
+    }
+
+    @keyframes sheen {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+
+    /* Crimped Top/Bottom edges of booster packs */
+    .pack-crimp {
+      background: repeating-linear-gradient(
+        90deg,
+        #0b0f19,
+        #0b0f19 3px,
+        #475569 4px,
+        #1e293b 6px
+      );
+    }
+
+    /* Floating pack pulse animation */
+    @keyframes floaty {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-7px) rotate(0.8deg); }
+    }
+    .floating-pack {
+      animation: floaty 3.2s ease-in-out infinite;
+    }
+
+    /* Floating heart cheer */
+    @keyframes cheer-fly {
+      0% { opacity: 1; transform: translate(-50%, 0) scale(0.9); }
+      100% { opacity: 0; transform: translate(calc(-50% + var(--tw-x, 0px)), -130px) scale(1.4); }
+    }
+    .floating-cheer {
+      position: absolute;
+      pointer-events: none;
+      animation: cheer-fly 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    }
+  </style>
+</head>
+<body class="bg-pocket text-slate-100 min-h-screen font-sans selection:bg-amber-400 selection:text-black flex flex-col justify-between overflow-x-hidden">
+
+  <!-- Top Status Bar -->
+  <header class="w-full max-w-lg mx-auto px-4 pt-3 pb-1 flex items-center justify-between text-xs select-none">
+    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-900/90 border border-cyan-500/40 text-cyan-400 font-bold shadow-md">
+      <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
+      <span id="stageBadgeText" class="tracking-wider text-[11px] font-sport text-sm">PTCG POCKET · BOOSTER SELECT</span>
+    </div>
+    
+    <button id="soundToggleBtn" type="button" class="cursor-pointer z-50 flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-900/90 hover:bg-slate-800 border border-slate-700 text-slate-300 transition-all active:scale-95 shadow">
+      <span id="soundIcon">🔊</span>
+      <span id="soundLabel" class="text-xs font-medium">音效開啟</span>
+    </button>
+  </header>
+
+  <!-- Main Viewport -->
+  <main class="w-full max-w-lg mx-auto px-4 py-2 flex flex-col items-center flex-grow justify-center relative">
+    
+    <!-- Title Section -->
+    <div class="text-center mb-2 select-none">
+      <div class="inline-flex items-center gap-1.5 text-[10px] tracking-[0.25em] text-cyan-400/90 uppercase font-display font-semibold">
+        ★ EXPANSION PACK : CLASS OF 2026 ★
+      </div>
+      <h1 class="text-2xl sm:text-3xl font-black text-white tracking-tight flex items-center justify-center gap-2">
+        <span>家慶</span>
+        <span class="text-amber-400 font-sport text-2xl">✕</span>
+        <span>若瑜</span>
+      </h1>
+      <p id="subInstruction" class="text-xs text-slate-400 mt-1 max-w-xs mx-auto leading-relaxed">
+        從懸浮的 10 個卡包中挑選 1 包！<br>
+        內藏唯一一張 <span class="text-amber-400 font-bold">【極稀有 SAR 女兒特卡】</span> ⚡
+      </p>
+    </div>
+
+    <!-- ================= STAGE 1: 10 FLOATING BOOSTER PACKS ================= -->
+    <div id="packSelectionStage" class="w-full flex flex-col items-center justify-center transition-all duration-500">
+      
+      <!-- Pack Rack Status Ticker -->
+      <div class="w-full max-w-sm mb-3 px-3 py-1.5 bg-slate-950/80 border border-slate-700/80 rounded-lg flex items-center justify-between text-[11px] font-monoNum shadow-inner">
+        <span class="text-slate-400">REMAINING PACKS: <strong id="remainingPacksText" class="text-cyan-400 font-bold">10 / 10</strong></span>
+        <span class="text-amber-400 font-bold tracking-wider">SAR CHANCE: 10%</span>
+      </div>
+
+      <!-- 10 Floating Packs Container (2 rows of 5) -->
+      <div id="packsGrid" class="grid grid-cols-5 gap-2 sm:gap-3 w-full max-w-md py-1 px-1">
+        <!-- Packs 0 to 9 generated dynamically by JS for 3D card-pack look -->
+      </div>
+
+      <!-- Quick Action Buttons -->
+      <div class="w-full max-w-xs mt-4 flex items-center justify-center gap-2">
+        <button id="randomPickBtn" type="button" class="cursor-pointer w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-cyan-500 via-sky-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 active:scale-95 text-slate-950 font-black text-xs sm:text-sm tracking-wider uppercase shadow-lg shadow-cyan-500/25 transition-all flex items-center justify-center gap-1.5 border-t border-white/40">
+          <span>🎲 幫我隨機挑選一包</span>
+        </button>
+      </div>
+      <p class="text-[10px] text-slate-500 text-center mt-2 font-mono">點擊任一卡包即可立刻開封抽取！</p>
+    </div>
+
+    <!-- ================= STAGE 2: SELECTED PACK TEAR-OPEN ================= -->
+    <div id="packRipStage" class="hidden relative w-full max-w-[270px] sm:max-w-[290px] aspect-[1/1.55] transition-all duration-700 ease-out flex-col items-center justify-center">
+      
+      <!-- Backlit Aura -->
+      <div class="absolute -inset-4 bg-gradient-to-r from-cyan-500/30 via-amber-500/20 to-purple-500/30 rounded-3xl blur-2xl"></div>
+
+      <!-- Focused Booster Pack -->
+      <div id="activeFoilPack" class="cursor-pointer relative w-full h-full booster-foil rounded-xl border border-cyan-500/50 overflow-hidden group shadow-2xl transition-transform duration-300 hover:scale-[1.02] active:scale-95 flex flex-col justify-between z-20">
+        
+        <div class="absolute inset-0 holo-sheen pointer-events-none opacity-40"></div>
+
+        <!-- Top Crimp -->
+        <div class="h-6 pack-crimp w-full border-b border-black/60 flex items-center justify-between px-3 relative">
+          <span class="text-[9px] font-mono tracking-widest text-slate-400 font-bold">TEAR HERE ✂</span>
+          <div class="w-10 h-1 bg-white/20 rounded-full"></div>
+          <span class="text-[9px] font-sport text-amber-400">POKÉ-STYLE</span>
+        </div>
+
+        <!-- Pack Center Badge & Mascot -->
+        <div class="flex-grow p-4 flex flex-col items-center justify-between text-center relative z-10">
+          <div class="w-full flex items-center justify-between">
+            <span class="text-[9px] font-mono tracking-widest text-cyan-300 border border-cyan-500/40 px-2 py-0.5 rounded bg-slate-900/70">LIMITED PKG</span>
+            <span class="text-[9px] font-sport text-amber-400 font-bold tracking-widest">EXPANSION #2026</span>
+          </div>
+
+          <div class="my-auto flex flex-col items-center">
+            <!-- Pokeball Holographic Icon -->
+            <div class="w-20 h-20 rounded-full bg-gradient-to-b from-rose-500 via-slate-900 to-slate-200 p-1 shadow-lg relative flex items-center justify-center mb-2">
+              <div class="w-full h-full bg-slate-950 rounded-full flex items-center justify-center relative overflow-hidden border border-white/20">
+                <div class="absolute top-0 inset-x-0 h-1/2 bg-red-600/80 border-b-2 border-black"></div>
+                <div class="absolute bottom-0 inset-x-0 h-1/2 bg-slate-100 border-t-2 border-black"></div>
+                <div class="w-6 h-6 rounded-full bg-white border-4 border-black z-10 shadow-sm"></div>
+              </div>
+            </div>
+
+            <h2 class="text-xl font-black text-white tracking-wider font-display uppercase">
+              BABY REVEAL PACK
+            </h2>
+            <p class="text-[11px] text-slate-300 font-medium">家慶 & 若瑜 · 2026 最強擴充包</p>
+          </div>
+
+          <!-- Bottom Button -->
+          <div class="w-full pb-1">
+            <div class="w-full py-2.5 rounded-lg bg-gradient-to-r from-amber-400 via-amber-500 to-yellow-600 text-slate-950 font-black text-xs sm:text-sm tracking-wider uppercase shadow-lg shadow-amber-500/25 group-hover:from-amber-300 group-hover:to-amber-500 transition-all flex items-center justify-center gap-1">
+              <span>⚡ 點擊撕開卡包</span>
+            </div>
+            <p class="text-[9px] text-slate-400 mt-1 font-mono">TAP TO RIP AND REVEAL CARD</p>
+          </div>
+        </div>
+
+        <!-- Bottom Crimp -->
+        <div class="h-6 pack-crimp w-full border-t border-black/60 flex items-center justify-center">
+          <div class="w-12 h-1 bg-white/20 rounded-full"></div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ================= STAGE 3: THE SCRATCH-OFF CARD (MISS OR HIT) ================= -->
+    <div id="scratchStage" class="hidden w-full max-w-[310px] sm:max-w-[330px] aspect-[4/5.5] relative flex-col items-center">
+      
+      <!-- Outer Card Frame (PTCG Pocket PSA Slab Border) -->
+      <div id="cardBorderSlab" class="relative w-full h-full rounded-2xl bg-gradient-to-b from-slate-800 via-slate-900 to-black p-3 shadow-2xl border-2 border-slate-700/80 overflow-hidden flex flex-col justify-between transition-colors duration-500">
+        
+        <!-- Holo Shimmer -->
+        <div class="absolute -inset-1 holo-sheen opacity-25 pointer-events-none"></div>
+
+        <!-- Card Top Header -->
+        <div class="w-full flex items-center justify-between pb-1.5 border-b border-slate-700/80 relative z-10">
+          <div class="flex items-center gap-1.5">
+            <div id="cardRarityBadge" class="w-6 h-5 rounded bg-slate-700 text-slate-200 font-sport text-xs font-bold flex items-center justify-center">?</div>
+            <span id="cardRarityLabel" class="text-[11px] font-bold tracking-wider text-slate-300 font-display">EXPANSION CARD</span>
+          </div>
+          <div class="text-right">
+            <span class="text-[9px] font-mono text-slate-400">NO. </span>
+            <span class="text-xs font-bold text-amber-300 font-display">2026-01</span>
+          </div>
+        </div>
+
+        <!-- Center Window with Reveal Layer & Scratch Layer -->
+        <div class="relative w-full flex-grow my-2 rounded-xl overflow-hidden bg-slate-950 border border-slate-800 select-none">
+          
+          <!-- SECRET CONTENT LAYER: MISS (EMPTY - 超音波の謎) -->
+          <div id="cardSecretMiss" class="hidden w-full h-full flex flex-col items-center justify-between p-2 text-center bg-slate-950 relative z-0">
+            <div class="relative w-full h-full flex items-center justify-center overflow-hidden rounded-lg">
+              <img src="image.png" alt="超音波の謎" class="w-full h-full object-contain drop-shadow-md select-none pointer-events-none" />
+            </div>
+          </div>
+
+          <!-- SECRET CONTENT LAYER: HIT (BABY GIRL SAR CARD - 寶貝小公主) -->
+          <div id="cardSecretHit" class="hidden w-full h-full flex flex-col items-center justify-between p-2 text-center bg-slate-950 relative z-0">
+            <div class="relative w-full h-full flex items-center justify-center overflow-hidden rounded-lg">
+              <img src="image_2.png" alt="寶貝小公主" class="w-full h-full object-contain drop-shadow-md select-none pointer-events-none" />
+            </div>
+          </div>
+
+          <!-- SCRATCH CANVAS (Layered on top of secret) -->
+          <canvas id="scratchCanvas" class="absolute inset-0 w-full h-full z-10 touch-none-action cursor-pointer rounded-lg transition-opacity duration-700"></canvas>
+
+        </div>
+
+        <!-- Card Footer -->
+        <div class="w-full flex items-center justify-between pt-1 relative z-10 text-[10px] text-slate-400 font-mono">
+          <span class="text-cyan-400">POKÉ-TCG REVEAL</span>
+          <span>© 2026 JIAQING & RUOYU</span>
+        </div>
+
+      </div>
+
+      <!-- Scratch Progress Bar -->
+      <div id="scratchIndicator" class="w-full flex items-center justify-between text-xs text-slate-400 px-2 mt-3">
+        <span class="flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+          <span>刮開進度：<strong id="progressText" class="text-cyan-400 font-bold">0%</strong></span>
+        </span>
+        <span id="hintTip" class="text-slate-400 text-[11px]">刮開滿 45% 自動解鎖</span>
+      </div>
+
+      <!-- Button after Miss: Try Next Pack -->
+      <button id="retryMissBtn" type="button" class="hidden cursor-pointer mt-3 w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-400 hover:to-yellow-500 text-slate-950 font-black text-xs tracking-wider uppercase shadow-lg active:scale-95 transition-transform flex items-center justify-center gap-1.5">
+        <span>🔄 寶寶還在躲貓貓～回卡包架抽下一包！</span>
+      </button>
+
+    </div>
+
+    <!-- ================= STAGE 4: GRAND FINALE BLESSINGS (ONLY ON HIT) ================= -->
+    <div id="actionArea" class="w-full max-w-sm mt-3 hidden opacity-0 transition-all duration-700 transform translate-y-3 flex flex-col gap-2.5">
+      
+      <!-- Interactive Stadium Cheers / Blessings Section -->
+      <div class="bg-slate-900/90 backdrop-blur rounded-xl p-3 border border-amber-500/30 shadow-lg flex items-center justify-between relative overflow-hidden">
+        <div class="relative z-10">
+          <p class="text-xs font-bold text-slate-200">恭喜抽出 001/001「寶貝小公主」！👑</p>
+          <p class="text-[11px] text-slate-400">全場已累積 <span id="blessingCount" class="font-bold text-amber-400 text-sm">99</span> 次應援</p>
+        </div>
+        
+        <button id="cheerBtn" type="button" class="cursor-pointer relative z-10 px-3.5 py-2 rounded-lg bg-gradient-to-r from-amber-400 to-yellow-500 hover:from-amber-300 hover:to-yellow-400 text-black font-black text-xs shadow-md active:scale-90 transition-transform flex items-center gap-1">
+          <span>💖 應援 +1</span>
+        </button>
+
+        <div id="cheerContainer" class="absolute inset-0 pointer-events-none overflow-hidden"></div>
+      </div>
+
+      <!-- Share & Play Again -->
+      <div class="grid grid-cols-2 gap-2.5">
+        <button id="shareBtn" type="button" class="cursor-pointer py-2.5 px-3 rounded-lg bg-amber-400 hover:bg-amber-300 active:scale-95 text-black font-bold text-xs sm:text-sm shadow-md transition-all flex items-center justify-center gap-1">
+          <span>📤 分享喜訊 / 複製</span>
+        </button>
+        <button id="resetAllBtn" type="button" class="cursor-pointer py-2.5 px-3 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 active:scale-95 text-slate-300 font-medium text-xs sm:text-sm transition-all flex items-center justify-center gap-1">
+          <span>🔄 重新抽卡</span>
+        </button>
+      </div>
+
+      <div id="toast" class="opacity-0 transition-opacity duration-300 text-center text-xs text-amber-400 font-medium py-1">
+        已複製喜訊文字至剪貼簿！✨
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="w-full text-center py-3 text-[11px] text-slate-500">
+    <p>家慶 & 若瑜 2026 最強擴充包 · 邀請您一同見證 🍼</p>
+  </footer>
+
+  <!-- SCRIPT LOGIC -->
+  <script>
+    // --- Safe Web Audio Synthesizer (PTCG Style Sound Effects) ---
+    class PocketSoundEngine {
+      constructor() {
+        this.ctx = null;
+        this.muted = false;
+      }
+
+      init() {
+        try {
+          if (!this.ctx) {
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            if (AudioContext) {
+              this.ctx = new AudioContext();
+            }
+          }
+          if (this.ctx && this.ctx.state === 'suspended') {
+            this.ctx.resume();
+          }
+        } catch(e) {}
+      }
+
+      playSelect() {
+        if (this.muted || !this.ctx) return;
+        try {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(523.25, this.ctx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(783.99, this.ctx.currentTime + 0.12);
+
+          gain.gain.setValueAtTime(0.2, this.ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.14);
+
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start();
+          osc.stop(this.ctx.currentTime + 0.14);
+        } catch(e) {}
+      }
+
+      playPackRip() {
+        if (this.muted || !this.ctx) return;
+        try {
+          const bufferSize = this.ctx.sampleRate * 0.45;
+          const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+          const data = buffer.getChannelData(0);
+          for (let i = 0; i < bufferSize; i++) {
+            data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.35));
+          }
+          const noise = this.ctx.createBufferSource();
+          noise.buffer = buffer;
+
+          const filter = this.ctx.createBiquadFilter();
+          filter.type = 'bandpass';
+          filter.frequency.setValueAtTime(1900, this.ctx.currentTime);
+          filter.Q.setValueAtTime(2.5, this.ctx.currentTime);
+
+          const gain = this.ctx.createGain();
+          gain.gain.setValueAtTime(0.38, this.ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.45);
+
+          noise.connect(filter);
+          filter.connect(gain);
+          gain.connect(this.ctx.destination);
+          noise.start();
+        } catch(e) {}
+      }
+
+      playScratch() {
+        if (this.muted || !this.ctx) return;
+        try {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(140 + Math.random() * 80, this.ctx.currentTime);
+          gain.gain.setValueAtTime(0.035, this.ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.06);
+
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start();
+          osc.stop(this.ctx.currentTime + 0.06);
+        } catch(e) {}
+      }
+
+      playMissSound() {
+        if (this.muted || !this.ctx) return;
+        try {
+          const notes = [440, 392, 349.23];
+          notes.forEach((freq, idx) => {
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, this.ctx.currentTime + idx * 0.12);
+            gain.gain.setValueAtTime(0.15, this.ctx.currentTime + idx * 0.12);
+            gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + idx * 0.12 + 0.18);
+
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start(this.ctx.currentTime + idx * 0.12);
+            osc.stop(this.ctx.currentTime + idx * 0.12 + 0.19);
+          });
+        } catch(e) {}
+      }
+
+      playFanfare() {
+        if (this.muted || !this.ctx) return;
+        try {
+          const notes = [523.25, 659.25, 783.99, 1046.50, 1318.51, 1567.98];
+          notes.forEach((freq, idx) => {
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(freq, this.ctx.currentTime + idx * 0.08);
+
+            gain.gain.setValueAtTime(0, this.ctx.currentTime + idx * 0.08);
+            gain.gain.linearRampToValueAtTime(0.24, this.ctx.currentTime + idx * 0.08 + 0.03);
+            gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + idx * 0.08 + 0.9);
+
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start(this.ctx.currentTime + idx * 0.08);
+            osc.stop(this.ctx.currentTime + idx * 0.08 + 0.95);
+          });
+        } catch(e) {}
+      }
+
+      playTink() {
+        if (this.muted || !this.ctx) return;
+        try {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(659.25 + Math.random() * 100, this.ctx.currentTime);
+          gain.gain.setValueAtTime(0.12, this.ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.2);
+
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start();
+          osc.stop(this.ctx.currentTime + 0.2);
+        } catch(e) {}
+      }
+    }
+
+    const sound = new PocketSoundEngine();
+
+    // GAME STATE: 10 PACKS (1 Winning index)
+    const TOTAL_PACKS = 10;
+    let winningPackIndex = Math.floor(Math.random() * TOTAL_PACKS);
+    let openedPacks = new Set();
+    let currentPackIndex = -1;
+    let currentIsWinning = false;
+
+    // Scratch state
+    let isDrawing = false;
+    let isRevealed = false;
+    let lastPoint = null;
+    let scratchCount = 0;
+    let blessings = 99;
+
+    // DOM Elements
+    const stageBadgeText = document.getElementById('stageBadgeText');
+    const subInstruction = document.getElementById('subInstruction');
+    const remainingPacksText = document.getElementById('remainingPacksText');
+    const packsGrid = document.getElementById('packsGrid');
+    const packSelectionStage = document.getElementById('packSelectionStage');
+    const randomPickBtn = document.getElementById('randomPickBtn');
+
+    const packRipStage = document.getElementById('packRipStage');
+    const activeFoilPack = document.getElementById('activeFoilPack');
+
+    const scratchStage = document.getElementById('scratchStage');
+    const cardBorderSlab = document.getElementById('cardBorderSlab');
+    const cardRarityBadge = document.getElementById('cardRarityBadge');
+    const cardRarityLabel = document.getElementById('cardRarityLabel');
+    const cardSecretMiss = document.getElementById('cardSecretMiss');
+    const cardSecretHit = document.getElementById('cardSecretHit');
+    const canvas = document.getElementById('scratchCanvas');
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
+    const progressText = document.getElementById('progressText');
+    const hintTip = document.getElementById('hintTip');
+    const retryMissBtn = document.getElementById('retryMissBtn');
+
+    const actionArea = document.getElementById('actionArea');
+    const cheerBtn = document.getElementById('cheerBtn');
+    const blessingCountEl = document.getElementById('blessingCount');
+    const cheerContainer = document.getElementById('cheerContainer');
+    const shareBtn = document.getElementById('shareBtn');
+    const resetAllBtn = document.getElementById('resetAllBtn');
+    const soundToggleBtn = document.getElementById('soundToggleBtn');
+    const soundIcon = document.getElementById('soundIcon');
+    const soundLabel = document.getElementById('soundLabel');
+    const toast = document.getElementById('toast');
+
+    // --- STEP 1: INITIALIZE 10 FLOATING PACKS ---
+    function renderPackGrid() {
+      packsGrid.innerHTML = '';
+      for (let i = 0; i < TOTAL_PACKS; i++) {
+        const isOpened = openedPacks.has(i);
+        const packEl = document.createElement('div');
+        packEl.dataset.index = i;
+        
+        // Staggered floating delay for lifelike PTCG Pocket ambiance
+        const animDelay = (i % 5) * 0.4;
+        
+        if (isOpened) {
+          // Opened pack looks faded/opened
+          packEl.className = 'relative aspect-[1/1.55] rounded-lg bg-slate-900 border border-slate-800 opacity-30 cursor-not-allowed flex flex-col justify-between p-1.5 overflow-hidden';
+          packEl.innerHTML = `
+            <div class="h-2 w-full pack-crimp"></div>
+            <div class="text-center my-auto">
+              <span class="text-[10px] font-mono text-slate-500">已開封</span>
+            </div>
+            <div class="h-2 w-full pack-crimp"></div>
+          `;
+        } else {
+          // Interactive Booster Pack
+          packEl.className = 'cursor-pointer relative aspect-[1/1.55] rounded-lg booster-foil border border-slate-700 hover:border-cyan-400 floating-pack transition-all duration-300 hover:scale-105 active:scale-95 flex flex-col justify-between p-1 overflow-hidden shadow-lg group';
+          packEl.style.animationDelay = `${animDelay}s`;
+          packEl.innerHTML = `
+            <div class="absolute inset-0 holo-sheen pointer-events-none opacity-30"></div>
+            <div class="h-2 w-full pack-crimp border-b border-black/40"></div>
+            <div class="flex-grow flex flex-col items-center justify-center text-center p-1 relative z-10">
+              <span class="text-[8px] font-sport text-amber-400">#${i + 1}</span>
+              <div class="w-6 h-6 rounded-full bg-slate-950 border border-cyan-400/60 flex items-center justify-center my-1 group-hover:scale-110 transition-transform">
+                <span class="text-[10px]">⚡</span>
+              </div>
+              <span class="text-[8px] font-mono text-slate-300 font-bold leading-tight">2026<br>PACK</span>
+            </div>
+            <div class="h-2 w-full pack-crimp border-t border-black/40"></div>
+          `;
+
+          // Bind click & touch to select
+          const onSelectPack = () => selectBoosterPack(i);
+          packEl.addEventListener('click', onSelectPack);
+          packEl.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            onSelectPack();
+          });
+        }
+
+        packsGrid.appendChild(packEl);
+      }
+
+      // Update remaining count
+      const remainingCount = TOTAL_PACKS - openedPacks.size;
+      remainingPacksText.textContent = `${remainingCount} / ${TOTAL_PACKS}`;
+    }
+
+    // Pick Pack Logic
+    function selectBoosterPack(index) {
+      if (openedPacks.has(index)) return;
+      currentPackIndex = index;
+      currentIsWinning = (index === winningPackIndex);
+
+      sound.init();
+      sound.playSelect();
+
+      // Transition to Stage 2: Rip Pack
+      packSelectionStage.classList.add('hidden');
+      packRipStage.classList.remove('hidden');
+      packRipStage.classList.add('flex');
+
+      stageBadgeText.textContent = 'STAGE 2 · 撕開卡包';
+      subInstruction.innerHTML = `已鎖定 <strong class="text-amber-400">#${index + 1} 號擴充包</strong>！<br>請點擊卡包撕開封條抽取 ⚡`;
+    }
+
+    // Random Pick Button
+    randomPickBtn.addEventListener('click', () => {
+      const available = [];
+      for (let i = 0; i < TOTAL_PACKS; i++) {
+        if (!openedPacks.has(i)) available.push(i);
+      }
+      if (available.length > 0) {
+        const randChoice = available[Math.floor(Math.random() * available.length)];
+        selectBoosterPack(randChoice);
+      }
+    });
+
+    // --- STEP 2: RIP ACTIVE BOOSTER PACK ---
+    function executeRipActivePack() {
+      sound.init();
+      sound.playPackRip();
+
+      activeFoilPack.style.transform = 'scale(1.08) rotate(-2deg)';
+      activeFoilPack.style.opacity = '0';
+      activeFoilPack.style.transition = 'all 0.4s ease-out';
+
+      // Confetti burst of foil slivers
+      confetti({
+        particleCount: 50,
+        spread: 70,
+        origin: { y: 0.5 },
+        colors: currentIsWinning ? ['#facc15', '#fb7185', '#38bdf8'] : ['#94a3b8', '#64748b', '#cbd5e1']
+      });
+
+      setTimeout(() => {
+        packRipStage.classList.add('hidden');
+        activeFoilPack.style.transform = 'none';
+        activeFoilPack.style.opacity = '1';
+
+        setupScratchStage();
+      }, 420);
+    }
+
+    activeFoilPack.addEventListener('click', executeRipActivePack);
+    activeFoilPack.addEventListener('touchend', (e) => {
+      e.preventDefault();
+      executeRipActivePack();
+    });
+
+    // --- STEP 3: SETUP SCRATCH CARD (MISS OR HIT) ---
+    function setupScratchStage() {
+      scratchStage.classList.remove('hidden');
+      scratchStage.classList.add('flex');
+      isRevealed = false;
+      progressText.textContent = '0%';
+      hintTip.textContent = '刮開滿 45% 自動解鎖';
+      retryMissBtn.classList.add('hidden');
+      canvas.classList.remove('opacity-0', 'pointer-events-none');
+
+      stageBadgeText.textContent = 'STAGE 3 · 刮開檢驗';
+      subInstruction.innerHTML = '用手指或滑鼠刮拭卡面，檢驗是否抽中正解特卡！✨';
+
+      if (currentIsWinning) {
+        // High Rarity Appearance
+        cardBorderSlab.classList.remove('border-slate-700/80');
+        cardBorderSlab.classList.add('border-amber-400/90');
+        cardRarityBadge.className = 'w-6 h-5 rounded bg-amber-400 text-black font-sport text-xs font-bold flex items-center justify-center';
+        cardRarityBadge.textContent = 'SAR';
+        cardRarityLabel.textContent = '寶貝小公主 · 001/001';
+        cardRarityLabel.className = 'text-[11px] font-bold tracking-wider text-amber-300 font-display';
+
+        cardSecretMiss.classList.add('hidden');
+        cardSecretHit.classList.remove('hidden');
+      } else {
+        // Miss Card Appearance
+        cardBorderSlab.classList.remove('border-amber-400/90');
+        cardBorderSlab.classList.add('border-slate-700/80');
+        cardRarityBadge.className = 'w-6 h-5 rounded bg-purple-600 text-white font-sport text-xs font-bold flex items-center justify-center';
+        cardRarityBadge.textContent = '支援者';
+        cardRarityLabel.textContent = '超音波の謎 · 躲貓貓模式';
+        cardRarityLabel.className = 'text-[11px] font-bold tracking-wider text-purple-300 font-display';
+
+        cardSecretHit.classList.add('hidden');
+        cardSecretMiss.classList.remove('hidden');
+      }
+
+      resizeCanvas();
+    }
+
+    function resizeCanvas() {
+      const rect = canvas.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
+      ctx.scale(dpr, dpr);
+      renderScratchOverlay(rect.width, rect.height);
+    }
+
+    function renderScratchOverlay(w, h) {
+      if (isRevealed) return;
+
+      // Holographic scratch coating
+      const grad = ctx.createLinearGradient(0, 0, w, h);
+      grad.addColorStop(0, '#1e293b');
+      grad.addColorStop(0.3, '#334155');
+      grad.addColorStop(0.5, '#475569');
+      grad.addColorStop(0.7, '#64748b');
+      grad.addColorStop(1, '#0f172a');
+
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, w, h);
+
+      // Micro sparkles
+      for (let i = 0; i < 220; i++) {
+        const x = Math.random() * w;
+        const y = Math.random() * h;
+        ctx.fillStyle = Math.random() > 0.5 ? 'rgba(56, 189, 248, 0.35)' : 'rgba(250, 204, 21, 0.3)';
+        ctx.beginPath();
+        ctx.arc(x, y, Math.random() * 1.5, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // Border and Center Poké-seal
+      ctx.save();
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.35)';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(8, 8, w - 16, h - 16);
+
+      // Center Badge
+      ctx.fillStyle = '#090d16';
+      ctx.beginPath();
+      ctx.arc(w / 2, h / 2 - 20, 32, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = '#38bdf8';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      ctx.fillStyle = '#f8fafc';
+      ctx.font = 'bold 22px "Teko", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('PTCG', w / 2, h / 2 - 20);
+
+      ctx.fillStyle = '#e2e8f0';
+      ctx.font = 'bold 14px "Noto Sans TC", sans-serif';
+      ctx.fillText('⚡ 刮開揭露卡牌 ⚡', w / 2, h / 2 + 28);
+
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = '500 11px "Noto Sans TC", sans-serif';
+      ctx.fillText('用手指或滑鼠刮拭卡面', w / 2, h / 2 + 48);
+      ctx.restore();
+    }
+
+    function getPointerPos(e) {
+      const rect = canvas.getBoundingClientRect();
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      return {
+        x: clientX - rect.left,
+        y: clientY - rect.top
+      };
+    }
+
+    function scratchAt(x, y) {
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.beginPath();
+      ctx.arc(x, y, 26, 0, Math.PI * 2);
+      ctx.fill();
+
+      if (lastPoint) {
+        ctx.beginPath();
+        ctx.lineWidth = 52;
+        ctx.lineCap = 'round';
+        ctx.moveTo(lastPoint.x, lastPoint.y);
+        ctx.lineTo(x, y);
+        ctx.stroke();
+      }
+      lastPoint = { x, y };
+
+      scratchCount++;
+      if (scratchCount % 4 === 0) {
+        sound.playScratch();
+      }
+    }
+
+    function checkRevealPercentage() {
+      if (isRevealed) return;
+      
+      const rect = canvas.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      const w = Math.floor(rect.width * dpr);
+      const h = Math.floor(rect.height * dpr);
+      
+      const stride = 16;
+      const imageData = ctx.getImageData(0, 0, w, h);
+      const data = imageData.data;
+      let cleared = 0;
+      let total = 0;
+
+      for (let y = 0; y < h; y += stride) {
+        for (let x = 0; x < w; x += stride) {
+          total++;
+          const alphaIndex = (y * w + x) * 4 + 3;
+          if (data[alphaIndex] < 128) {
+            cleared++;
+          }
+        }
+      }
+
+      const percent = Math.min(100, Math.round((cleared / total) * 100));
+      progressText.textContent = `${percent}%`;
+
+      if (percent >= 45) {
+        finishReveal();
+      }
+    }
+
+    function finishReveal() {
+      if (isRevealed) return;
+      isRevealed = true;
+      progressText.textContent = '100%';
+      canvas.classList.add('opacity-0', 'pointer-events-none');
+
+      // Record this pack as opened
+      openedPacks.add(currentPackIndex);
+
+      if (currentIsWinning) {
+        // --- HIT (SAR BABY GIRL) ---
+        hintTip.textContent = '🏆 恭喜抽中 001/001 寶貝小公主！';
+        stageBadgeText.textContent = 'STAGE 4 · 揭曉大成功';
+        subInstruction.innerHTML = '🎉 恭喜家慶與若瑜！迎來最可愛的「寶貝小公主」！👧🎀';
+        sound.playFanfare();
+
+        confetti({
+          particleCount: 140,
+          spread: 90,
+          origin: { y: 0.6 },
+          colors: ['#fb7185', '#f43f5e', '#facc15', '#f8fafc', '#38bdf8']
+        });
+
+        setTimeout(() => {
+          confetti({
+            particleCount: 80,
+            angle: 60,
+            spread: 60,
+            origin: { x: 0, y: 0.7 },
+            colors: ['#fb7185', '#facc15', '#ffffff']
+          });
+          confetti({
+            particleCount: 80,
+            angle: 120,
+            spread: 60,
+            origin: { x: 1, y: 0.7 },
+            colors: ['#fb7185', '#facc15', '#ffffff']
+          });
+        }, 350);
+
+        setTimeout(() => {
+          actionArea.classList.remove('hidden');
+          setTimeout(() => {
+            actionArea.classList.remove('opacity-0', 'translate-y-3');
+          }, 50);
+        }, 500);
+
+      } else {
+        // --- MISS (TRY AGAIN) ---
+        hintTip.textContent = '💨 寶寶還在躲貓貓～請再接再厲！';
+        subInstruction.innerHTML = '『即使是最先進的超音波，也有看不見的時候⋯』快抽下一包！';
+        sound.playMissSound();
+        retryMissBtn.classList.remove('hidden');
+      }
+    }
+
+    // Scratch Event Listeners
+    function startScratch(e) {
+      if (isRevealed) return;
+      isDrawing = true;
+      sound.init();
+      const pos = getPointerPos(e);
+      lastPoint = pos;
+      scratchAt(pos.x, pos.y);
+      if (e.cancelable) e.preventDefault();
+    }
+
+    function moveScratch(e) {
+      if (!isDrawing || isRevealed) return;
+      const pos = getPointerPos(e);
+      scratchAt(pos.x, pos.y);
+      if (scratchCount % 5 === 0) {
+        checkRevealPercentage();
+      }
+      if (e.cancelable) e.preventDefault();
+    }
+
+    function endScratch() {
+      if (!isDrawing) return;
+      isDrawing = false;
+      lastPoint = null;
+      checkRevealPercentage();
+    }
+
+    canvas.addEventListener('mousedown', startScratch);
+    window.addEventListener('mousemove', moveScratch);
+    window.addEventListener('mouseup', endScratch);
+
+    canvas.addEventListener('touchstart', startScratch, { passive: false });
+    window.addEventListener('touchmove', moveScratch, { passive: false });
+    window.addEventListener('touchend', endScratch);
+    window.addEventListener('touchcancel', endScratch);
+
+    // Return to Booster Selection on Miss
+    retryMissBtn.addEventListener('click', () => {
+      scratchStage.classList.add('hidden');
+      packSelectionStage.classList.remove('hidden');
+      stageBadgeText.textContent = 'PTCG POCKET · BOOSTER SELECT';
+      subInstruction.innerHTML = '繼續挑選下一包！內藏唯一一張 <span class="text-amber-400 font-bold">【極稀有 SAR 女兒特卡】</span> ⚡';
+      renderPackGrid();
+    });
+
+    // Mute Button
+    soundToggleBtn.addEventListener('click', () => {
+      sound.init();
+      sound.muted = !sound.muted;
+      if (sound.muted) {
+        soundIcon.textContent = '🔇';
+        soundLabel.textContent = '靜音';
+        soundToggleBtn.classList.add('opacity-70');
+      } else {
+        soundIcon.textContent = '🔊';
+        soundLabel.textContent = '音效開啟';
+        soundToggleBtn.classList.remove('opacity-70');
+        sound.playTink();
+      }
+    });
+
+    // Cheer Clicker
+    cheerBtn.addEventListener('click', () => {
+      blessings++;
+      blessingCountEl.textContent = blessings;
+      sound.playTink();
+
+      const cheer = document.createElement('div');
+      cheer.className = 'floating-cheer text-xl select-none';
+      const emojis = ['⚡', '💖', '👑', '⭐', '👧', '👏', '✨'];
+      cheer.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+      
+      const xOffset = (Math.random() - 0.5) * 60;
+      cheer.style.setProperty('--tw-x', `${xOffset}px`);
+      cheer.style.left = '80%';
+      cheer.style.top = '50%';
+
+      cheerContainer.appendChild(cheer);
+      setTimeout(() => cheer.remove(), 1200);
+    });
+
+    // Share & Copy
+    shareBtn.addEventListener('click', () => {
+      const shareText = `⚡【家慶 & 若瑜 2026 寶可夢卡牌大揭曉】👧🎀\n太感動了！抽中 001/001「寶貝小公主」神卡！\n快來開卡為若瑜、家慶與小千金送上滿滿應援祝福 ✨`;
+      
+      if (navigator.share) {
+        navigator.share({
+          title: '家慶 & 若瑜 寶寶性別揭曉 ⚡',
+          text: shareText,
+          url: window.location.href
+        }).catch(() => copyToClipboard(shareText));
+      } else {
+        copyToClipboard(shareText);
+      }
+    });
+
+    function copyToClipboard(text) {
+      const tempInput = document.createElement('textarea');
+      tempInput.value = text;
+      document.body.appendChild(tempInput);
+      tempInput.select();
+      try {
+        document.execCommand('copy');
+        showToast('已複製喜訊文字至剪貼簿！💌');
+      } catch (err) {
+        showToast('請截圖分享給好友 ✨');
+      }
+      document.body.removeChild(tempInput);
+    }
+
+    function showToast(msg) {
+      toast.textContent = msg;
+      toast.classList.remove('opacity-0');
+      setTimeout(() => toast.classList.add('opacity-0'), 2200);
+    }
+
+    // Reset All Flow
+    resetAllBtn.addEventListener('click', () => {
+      location.reload();
+    });
+
+    window.addEventListener('resize', () => {
+      if (!scratchStage.classList.contains('hidden') && !isRevealed) {
+        resizeCanvas();
+      }
+    });
+
+    // Initial render
+    renderPackGrid();
+  </script>
+</body>
+</html>

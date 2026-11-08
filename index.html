@@ -12,8 +12,8 @@
 
   <!-- Google Fonts: Noto Sans TC & Montserrat -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,700;0,900;1,900&family=Noto+Sans+TC:wght@400;600;700;900&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Noto+Sans+TC:wght@400;600;700;900&display=swap" rel="stylesheet">
 
   <style>
     body {
@@ -81,12 +81,6 @@
       animation: floatingPack 3.5s ease-in-out infinite;
     }
 
-    /* 卡牌 3D 翻轉與彈出容器 */
-    .perspective-1000 {
-      perspective: 1000px;
-    }
-
-    /* 支援者卡包金色微光 */
     .glow-gold {
       box-shadow: 0 0 25px rgba(245, 158, 11, 0.4), inset 0 0 15px rgba(245, 158, 11, 0.2);
     }
@@ -97,7 +91,7 @@
 </head>
 <body class="min-h-screen flex flex-col justify-between relative bg-[#060814] text-slate-100">
 
-  <!-- 全景賽博科技與星空背景 -->
+  <!-- 全景暗色科技星空背景 -->
   <div class="fixed inset-0 pointer-events-none z-0">
     <div class="absolute inset-0 bg-radial-at-t from-slate-900/60 via-[#060814] to-[#030408]"></div>
     <div class="absolute -top-32 -left-32 w-80 h-80 bg-blue-600/10 rounded-full blur-3xl"></div>
@@ -105,7 +99,7 @@
     <div class="absolute bottom-0 left-1/4 w-96 h-96 bg-purple-600/10 rounded-full blur-3xl"></div>
   </div>
 
-  <!-- 頂部輕巧導航列 -->
+  <!-- 頂部緊湊導航列 -->
   <header class="relative z-20 w-full max-w-lg mx-auto pt-3 px-4 flex justify-between items-center text-xs text-slate-400">
     <div class="flex items-center gap-1.5 bg-slate-900/80 border border-slate-700/60 px-2.5 py-1 rounded-full backdrop-blur-md">
       <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
@@ -136,7 +130,7 @@
 
       <!-- 10 個卡包網格 (2排，每排5個) -->
       <div class="grid grid-cols-5 gap-2 w-full max-w-sm mb-4 px-1" id="packGrid">
-        <!-- JS 動態生成 10 個卡包 -->
+        <!-- JS 動態生成 -->
       </div>
 
       <!-- 隨機抽包快捷按鈕 -->
@@ -173,7 +167,7 @@
     <!-- ==================== 階段 3：滿版刮刮樂大卡片 ==================== -->
     <section id="stageScratch" class="hidden w-full flex flex-col items-center justify-center transition-all duration-300 my-auto">
       
-      <!-- 緊湊精簡小標題 -->
+      <!-- 緊湊小標題 -->
       <div class="text-center mb-2 w-full px-2">
         <h2 class="text-sm font-black text-amber-300 tracking-wide flex items-center justify-center gap-1.5">
           <span>✨</span>
@@ -183,35 +177,30 @@
         <p class="text-[11px] text-slate-300" id="scratchSubText">手指滑動刮除銀粉塗層，揭曉卡牌全貌！</p>
       </div>
 
-      <!-- 滿版卡牌容器 (精準貼合寶可夢卡比例，寬度最大化) -->
+      <!-- 滿版卡牌容器 (極大化呈現) -->
       <div class="w-full max-w-[340px] px-1 flex justify-center">
         <div class="relative w-full aspect-[1/1.42] rounded-2xl p-[3px] bg-gradient-to-b from-amber-300 via-yellow-500 to-amber-600 shadow-2xl shadow-black/80 flex items-center justify-center" id="cardOuterFrame">
           
-          <!-- 卡牌主內容區 -->
           <div class="relative w-full h-full rounded-[14px] overflow-hidden bg-slate-950 flex items-center justify-center">
-            
             <!-- 底層目標卡片圖片 -->
-            <img id="cardImage" src="image.png" alt="Revealed Pokemon Card" class="absolute inset-0 w-full h-full object-cover select-none pointer-events-none" />
+            <img id="cardImage" src="image.png" alt="Pokemon Card" class="absolute inset-0 w-full h-full object-cover select-none pointer-events-none" />
 
             <!-- 頂層刮刮樂 Canvas -->
             <canvas id="scratchCanvas" class="absolute inset-0 w-full h-full cursor-crosshair z-10 touch-none"></canvas>
-
           </div>
         </div>
       </div>
 
-      <!-- 刮開進度與操作互動按鈕 -->
+      <!-- 刮開進度與互動按鈕 -->
       <div class="w-full max-w-[340px] px-2 mt-2.5 flex flex-col items-center gap-2">
-        
-        <!-- 進度提示 -->
         <div class="w-full flex justify-between items-center text-[11px] text-slate-300 font-bold px-1">
           <span id="progressLabel" class="flex items-center gap-1.5">
             <span class="w-2 h-2 rounded-full bg-cyan-400"></span>刮開進度：<span id="progressNum">0%</span>
           </span>
-          <span id="revealStatusText" class="text-amber-300 text-[10px]">持續刮開超過 45% 自動完全揭示</span>
+          <span class="text-amber-300 text-[10px]">持續刮開超過 45% 自動揭示</span>
         </div>
 
-        <!-- 狀態 1：空包按鈕 (抽到超音波の謎) -->
+        <!-- 狀態 1：空包按鈕 (超音波の謎) -->
         <div id="missActionArea" class="hidden w-full flex-col gap-2">
           <button id="backToPacksBtn" class="w-full bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 text-slate-950 font-black py-2.5 px-4 rounded-xl shadow-lg shadow-amber-500/20 active:scale-95 transition flex items-center justify-center gap-2 text-xs sm:text-sm">
             <span>🔄</span>
@@ -219,7 +208,7 @@
           </button>
         </div>
 
-        <!-- 狀態 2：正解神卡按鈕 (抽中小公主) -->
+        <!-- 狀態 2：正解按鈕 (寶貝小公主) -->
         <div id="winActionArea" class="hidden w-full flex-col gap-2">
           <div class="bg-gradient-to-r from-pink-500/20 to-purple-500/20 border border-pink-400/40 rounded-xl p-2.5 text-center">
             <h3 class="text-sm font-black text-pink-300">🎉 恭喜！抽中 001/001「寶貝小公主」神卡！</h3>
@@ -241,7 +230,6 @@
 
   </main>
 
-  <!-- 底部微型版權 -->
   <footer class="relative z-10 w-full py-1 text-center text-[10px] text-slate-300">
     家慶 & 若瑜 · 2026 GENDER REVEAL SPECIAL PACK
   </footer>
@@ -250,13 +238,37 @@
   <script>
     // --- 遊戲狀態管理 ---
     const TOTAL_PACKS = 10;
-    let winningPackIndex = Math.floor(Math.random() * TOTAL_PACKS); // 0 ~ 9 隨機正解
+    let winningPackIndex = Math.floor(Math.random() * TOTAL_PACKS);
     let openedPacks = new Set();
     let currentSelectedIndex = null;
     let soundEnabled = true;
     let isScratching = false;
     let scratchRevealed = false;
-    let cheerNum = 88;
+
+    // --- 雲端與本地計數器初始化 ---
+    const COUNTER_NAMESPACE = 'jiaqing-ruoyu-gender-reveal-2026';
+    const COUNTER_KEY = 'blessings';
+    const API_BASE = 'https://api.counterapi.dev/v1';
+
+    let localSaved = parseInt(localStorage.getItem('babyReveal_cheerCount'));
+    let cheerNum = !isNaN(localSaved) && localSaved >= 99 ? localSaved : 99;
+
+    const cheerCount = document.getElementById('cheerCount');
+    cheerCount.textContent = `${cheerNum}+`;
+
+    async function initCloudCounter() {
+      try {
+        const res = await fetch(`${API_BASE}/${COUNTER_NAMESPACE}/${COUNTER_KEY}/`);
+        if (res.ok) {
+          const data = await res.json();
+          if (data && typeof data.count === 'number') {
+            cheerNum = Math.max(cheerNum, data.count + 99);
+            cheerCount.textContent = `${cheerNum}+`;
+          }
+        }
+      } catch (err) {}
+    }
+    initCloudCounter();
 
     // --- Web Audio 簡易音效引擎 ---
     let audioCtx = null;
@@ -284,9 +296,7 @@
         gain.connect(ctx.destination);
         osc.start();
         osc.stop(ctx.currentTime + duration);
-      } catch (e) {
-        console.warn("Audio play blocked", e);
-      }
+      } catch (e) {}
     }
 
     function playRipSound() {
@@ -331,7 +341,7 @@
       setTimeout(() => playTone(240, 'sine', 0.35, 0.2), 180);
     }
 
-    // --- DOM 元素獲取 ---
+    // --- DOM 元素 ---
     const stageSelect = document.getElementById('stageSelect');
     const stageRip = document.getElementById('stageRip');
     const stageScratch = document.getElementById('stageScratch');
@@ -347,14 +357,13 @@
     const backToPacksBtn = document.getElementById('backToPacksBtn');
     const randomPickBtn = document.getElementById('randomPickBtn');
     const cheerBtn = document.getElementById('cheerBtn');
-    const cheerCount = document.getElementById('cheerCount');
     const shareResultBtn = document.getElementById('shareResultBtn');
     const soundToggleBtn = document.getElementById('soundToggleBtn');
     const soundIcon = document.getElementById('soundIcon');
     const soundText = document.getElementById('soundText');
     const cardOuterFrame = document.getElementById('cardOuterFrame');
 
-    // --- 初始化 10 個卡包 ---
+    // --- 產生卡包架 ---
     function renderPacks() {
       packGrid.innerHTML = '';
       for (let i = 0; i < TOTAL_PACKS; i++) {
@@ -385,7 +394,7 @@
       }
     }
 
-    // --- 選擇卡包流程 ---
+    // --- 選擇卡包 ---
     function selectPack(index) {
       getAudioContext();
       playTone(440, 'triangle', 0.15, 0.2);
@@ -398,7 +407,7 @@
       selectedPackTitle.textContent = `第 #0${index + 1} 號卡包 已選定！`;
     }
 
-    // --- 撕開卡包觸發 ---
+    // --- 撕開卡包 ---
     rippingPack.addEventListener('click', () => {
       playRipSound();
       rippingPack.classList.add('scale-105', 'opacity-0');
@@ -411,7 +420,7 @@
       }, 350);
     });
 
-    // --- 刮刮樂舞台初始化 ---
+    // --- 進入刮刮樂 ---
     function openScratchStage() {
       stageScratch.classList.remove('hidden');
       stageScratch.classList.add('flex');
@@ -434,20 +443,17 @@
       setupCanvas();
     }
 
-// --- 繪製刮刮樂銀箔塗層（修復高解析度座標偏移問題） ---
+    // --- 繪製刮刮樂銀箔（精準像素校正） ---
     function setupCanvas() {
       const rect = scratchCanvas.getBoundingClientRect();
       const dpr = window.devicePixelRatio || 1;
       
-      // 將內部像素大小直接等比放大至物理像素
       scratchCanvas.width = Math.round(rect.width * dpr);
       scratchCanvas.height = Math.round(rect.height * dpr);
 
       const ctx = scratchCanvas.getContext('2d');
-      // 重設變換矩陣，避免重複疊加 scale
       ctx.setTransform(1, 0, 0, 1, 0, 0);
 
-      // 銀色金屬全息底漆（以真實像素寬高繪製）
       const grad = ctx.createLinearGradient(0, 0, scratchCanvas.width, scratchCanvas.height);
       grad.addColorStop(0, '#cbd5e1');
       grad.addColorStop(0.3, '#94a3b8');
@@ -458,13 +464,11 @@
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, scratchCanvas.width, scratchCanvas.height);
 
-      // 雜訊金屬閃爍顆粒
       for (let i = 0; i < 450; i++) {
         ctx.fillStyle = Math.random() > 0.5 ? 'rgba(255,255,255,0.45)' : 'rgba(30,41,59,0.35)';
         ctx.fillRect(Math.random() * scratchCanvas.width, Math.random() * scratchCanvas.height, 2 * dpr, 2 * dpr);
       }
 
-      // 居中印章
       ctx.fillStyle = '#0f172a';
       ctx.font = `900 ${16 * dpr}px "Montserrat", sans-serif`;
       ctx.textAlign = 'center';
@@ -474,7 +478,7 @@
       ctx.fillText('滑動刮開塗層 揭曉卡牌', scratchCanvas.width / 2, scratchCanvas.height / 2 + 12 * dpr);
     }
 
-    // --- 刮除互動處理（精準對齊手指觸控座標） ---
+    // --- 手指精準刮除處理 ---
     function scratch(e) {
       if (!isScratching || scratchRevealed) return;
       if (e.cancelable) e.preventDefault();
@@ -483,7 +487,6 @@
       const clientX = e.touches ? e.touches[0].clientX : e.clientX;
       const clientY = e.touches ? e.touches[0].clientY : e.clientY;
 
-      // 計算手指在 Canvas 內部實際像素上的精確位置
       const scaleX = scratchCanvas.width / rect.width;
       const scaleY = scratchCanvas.height / rect.height;
 
@@ -496,7 +499,6 @@
       ctx.save();
       ctx.globalCompositeOperation = 'destination-out';
       ctx.beginPath();
-      // 依裝置像素比等比放大刮除圓形半徑（手感更滑順）
       ctx.arc(x, y, 28 * dpr, 0, Math.PI * 2);
       ctx.fill();
       ctx.restore();
@@ -553,7 +555,7 @@
       }
     }
 
-    // 刮刮事件監聽
+    // 觸控與滑鼠事件
     ['mousedown', 'touchstart'].forEach(evt => {
       scratchCanvas.addEventListener(evt, (e) => {
         isScratching = true;
@@ -571,7 +573,7 @@
       });
     });
 
-    // --- 返回卡包架抽下一包 ---
+    // --- 回卡包架 ---
     backToPacksBtn.addEventListener('click', () => {
       stageScratch.classList.add('hidden');
       stageScratch.classList.remove('flex');
@@ -592,10 +594,11 @@
       }
     });
 
-    // --- 獻上祝福連擊 ---
-    cheerBtn.addEventListener('click', () => {
+    // --- 獻上祝福連擊 (修正 99+ 遞增與持久化) ---
+    cheerBtn.addEventListener('click', async () => {
       cheerNum++;
-      cheerCount.textContent = cheerNum;
+      localStorage.setItem('babyReveal_cheerCount', cheerNum);
+      cheerCount.textContent = `${cheerNum}+`;
       playTone(587.33, 'triangle', 0.1, 0.15);
       
       confetti({
@@ -604,9 +607,13 @@
         origin: { y: 0.85 },
         colors: ['#f472b6', '#fb7185', '#fbbf24']
       });
+
+      try {
+        await fetch(`${API_BASE}/${COUNTER_NAMESPACE}/${COUNTER_KEY}/up`);
+      } catch (e) {}
     });
 
-    // --- 一鍵分享功能 ---
+    // --- 一鍵分享 ---
     shareResultBtn.addEventListener('click', async () => {
       const shareData = {
         title: '家慶 ✕ 若瑜 寶寶性別揭曉！',
@@ -623,7 +630,7 @@
       }
     });
 
-    // --- 音效開關切換 ---
+    // --- 音效開關 ---
     soundToggleBtn.addEventListener('click', () => {
       soundEnabled = !soundEnabled;
       if (soundEnabled) {
@@ -636,7 +643,7 @@
       }
     });
 
-    // --- 獲勝彩帶紙花 ---
+    // --- 彩帶特效 ---
     function triggerConfettiShower() {
       const duration = 2.5 * 1000;
       const end = Date.now() + duration;
@@ -663,14 +670,14 @@
       }());
     }
 
-    // --- 視窗縮放自適應 ---
+    // --- 視窗自適應 ---
     window.addEventListener('resize', () => {
       if (!stageScratch.classList.contains('hidden') && !scratchRevealed) {
         setupCanvas();
       }
     });
 
-    // 啟動首頁
+    // 初始化渲染
     renderPacks();
   </script>
 </body>
